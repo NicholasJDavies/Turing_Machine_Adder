@@ -108,7 +108,7 @@ class machine:
     
 # main loop
 def main():
-    my_machine = machine(" X1X X1X ", 6, 1)
+    my_machine = machine(" X111X X1X ", 8, 1)
     my_machine.print_state()
     output = 0
     MAX_LOOPS = 100000
