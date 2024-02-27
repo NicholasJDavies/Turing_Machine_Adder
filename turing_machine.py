@@ -34,6 +34,17 @@ class machine:
         self.position = position + 5
         self.dial = dial
 
+    def main_loop(self, verbose=True):
+        output = 0
+        loops = 0
+        while(output == 0 and loops < MAX_LOOPS):
+            if(verbose):
+                self.print_state()
+            output = self.execute_func()
+            loops += 1
+
+        self.print_state()
+
     instructions = {
         (' ', 1): ('D', 6),
         (' ', 2): ('R', 2),
@@ -105,14 +116,8 @@ class machine:
     
 # main loop
 def main():
-    my_machine = machine(" X11X X1X ", 6, 1)
-    my_machine.print_state()
-    output = 0
-    loops = 0
-    while(output == 0 and loops < MAX_LOOPS):
-        output = my_machine.execute_func()
-        my_machine.print_state()
-        loops += 1
+    my_machine = machine(" X111X X1X ", 7, 1)
+    my_machine.main_loop(verbose = True)
 
 main()
 print("\n\n")
