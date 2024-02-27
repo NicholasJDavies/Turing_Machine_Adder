@@ -23,8 +23,9 @@ class machine:
     '''
 
     def __init__(self,  tape, position, dial):
-        self.tape = ' '*10 + tape + ' '*10
-        self.position = position + 10
+        arr = [char for char in tape]
+        self.tape = [' ' for i in range(5)] + arr + [' ' for i in range(5)]
+        self.position = position + 5
         self.dial = dial
 
     # executes function on tape
@@ -37,7 +38,7 @@ class machine:
         match (code, self.dial):
 
             case (' ', 1):
-                self.tape[self.position] = 1
+                self.tape[self.position] = '1'
                 self.dial = 6
             case (' ', 2):
                 self.position -= 1
@@ -60,10 +61,10 @@ class machine:
                 self.dial = 2
             case ('X', 2):
                 self.tape[self.position] = ' '
-                self.dial = 2    
+                self.dial = 3    
             case ('X', 3):
                 self.tape[self.position] = ' '
-                self.dial = 2
+                self.dial = 4
             case ('X', 4):
                 return 2 # error
             case ('X', 5):
@@ -94,16 +95,30 @@ class machine:
     # prints the state of the machine\
     def print_state(self):
         # output = ' ' +  self.tape.lstrip().rstrip() + ' '
-        output = self.tape
+        output = ''.join(self.tape)
 
-        for i in range(output.length):
+        for i in range(len(output)):
             if i == self.position:
-                print(f'|{output[i]}({self.dial}) |')
+                print(f'| {output[i]}({self.dial})', end='')
             else:
-                print(f'|  {output[i]}  |')
+                print(f'| {output[i]}   ', end='')
+
+        print("|")
         return
     
 # main loop
 def main():
-    my_machine = machine()
-    my_machine.set_tape(" X1X X1X ", 6, 1)
+    my_machine = machine(" X1X X1X ", 6, 1)
+    my_machine.print_state()
+    output = 0
+    MAX_LOOPS = 100000
+    loops = 0
+    while(output == 0 and loops < MAX_LOOPS):
+        output = my_machine.execute_func()
+        my_machine.print_state()
+        loops += 1
+
+    print()
+    print()
+
+main()
