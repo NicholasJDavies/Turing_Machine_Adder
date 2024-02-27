@@ -1,5 +1,7 @@
 # Author: Nicholas Davies
 
+MAX_LOOPS = 1000
+
 class machine:
     '''
     Recognised Symbols: '1', 'X', ' '
@@ -20,91 +22,77 @@ class machine:
     E = clear current symbol
     R = move tape right (head moves left)
     L = move tape left (head moves right)
+    ? = error
+    ! = halt, successful
 
     Number (in instruction codes):
         sets dial to number.
-    
-    ?:
-        error state
-    
-    !:
-        halt
     '''
-
     def __init__(self,  tape, position, dial):
         arr = [char for char in tape]
         self.tape = [' ' for i in range(5)] + arr + [' ' for i in range(5)]
         self.position = position + 5
         self.dial = dial
 
+    instructions = {
+        (' ', 1): ('D', 6),
+        (' ', 2): ('R', 2),
+        (' ', 3): ('R', 3),
+        (' ', 4): ('L', 4),
+        (' ', 5): ('L', 5),
+        (' ', 6): ('X', 6),
+
+        ('X', 1): ('E', 2),
+        ('X', 2): ('E', 3),
+        ('X', 3): ('E', 4),
+        ('X', 4): ('?', 0),
+        ('X', 5): ('?', 0),
+        ('X', 6): ('!', 0),
+
+        ('1', 1): ('R', 1),
+        ('1', 2): ('?', 1),
+        ('1', 3): ('E', 5),
+        ('1', 4): ('R', 6),
+        ('1', 5): ('R', 1),
+        ('1', 6): ('R', 3)
+    }
+
+
+    def get_code(self):
+        code = self.tape[self.position]
+        instr = machine.instructions[code, self.dial]
+        return instr
+        
     # executes function on tape
     # returns "1" when done, 
     # "0" if continuing, 
     # "2" if it encounters an error
     def execute_func(self):
-        code = self.tape[self.position]
+        instr = self.get_code()
 
-        match (code, self.dial):
-
-            case (' ', 1):
+        match (instr[0]):
+            case 'D':
                 self.tape[self.position] = '1'
-                self.dial = 6
-            case (' ', 2):
-                self.position -= 1
-                self.dial = 2
-            case (' ', 3):
-                self.position -= 1
-                self.dial = 3
-            case (' ', 4):
-                self.position += 1
-                self.dial = 4
-            case (' ', 5):
-                self.position += 1
-                self.dial = 5
-            case (' ', 6):
+            case 'X':
                 self.tape[self.position] = 'X'
-                self.dial = 6
+            case 'E':
+                self.tape[self.position] = ' '
+            case 'R':
+                self.position -= 1
+            case 'L':
+                self.position += 1
+            case '!':
+                return 1
+            case '?':
+                return 2
 
-            case ('X', 1):
-                self.tape[self.position] = ' '
-                self.dial = 2
-            case ('X', 2):
-                self.tape[self.position] = ' '
-                self.dial = 3    
-            case ('X', 3):
-                self.tape[self.position] = ' '
-                self.dial = 4
-            case ('X', 4):
-                return 2 # error
-            case ('X', 5):
-                return 2 # error
-            case ('X', 6):
-                return 1 # Halt
-
-            case ('1', 1):
-                self.position -= 1
-                self.dial = 1
-            case ('1', 2):
-                return 2 # error
-            case ('1', 3):
-                self.tape[self.position] = ' '
-                self.dial = 5
-            case ('1', 4):
-                self.position -= 1
-                self.dial = 6
-            case ('1', 5):
-                self.position -= 1
-                self.dial = 1
-            case ('1', 6):
-                self.position -= 1
-                self.dial = 3
-
+        self.dial = instr[1]
         return 0
 
-    # prints the state of the machine\
+    # prints the state of the machine
     def print_state(self):
-        # output = ' ' +  self.tape.lstrip().rstrip() + ' '
         output = ''.join(self.tape)
+        code = str(self.get_code()[0]) + str(self.get_code()[1]) 
 
         for i in range(len(output)):
             if i == self.position:
@@ -112,22 +100,19 @@ class machine:
             else:
                 print(f'| {output[i]}   ', end='')
 
-        print("|")
+        print(f"| {code}")
         return
     
 # main loop
 def main():
-    my_machine = machine(" X111X X1X ", 8, 1)
+    my_machine = machine(" X11X X1X ", 6, 1)
     my_machine.print_state()
     output = 0
-    MAX_LOOPS = 100000
     loops = 0
     while(output == 0 and loops < MAX_LOOPS):
         output = my_machine.execute_func()
         my_machine.print_state()
         loops += 1
 
-    print()
-    print()
-
 main()
+print("\n\n")
