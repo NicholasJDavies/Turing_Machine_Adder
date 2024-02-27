@@ -20,6 +20,15 @@ class machine:
     E = clear current symbol
     R = move tape right (head moves left)
     L = move tape left (head moves right)
+
+    Number (in instruction codes):
+        sets dial to number.
+    
+    ?:
+        error state
+    
+    !:
+        halt
     '''
 
     def __init__(self,  tape, position, dial):
