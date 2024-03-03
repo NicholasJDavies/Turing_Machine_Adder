@@ -156,10 +156,6 @@ def main():
         my_machine.main_loop(verbose = True)
         input("Press enter to continue")
 
-
-
-
-
 # returns:
 #   True iff the input tape only has one head/dial
 def has_only_one_head_input(turing_tape):
