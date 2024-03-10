@@ -35,9 +35,10 @@ class machine:
 
     # Initialises the Turing Machine
     def __init__(self,  tape, position, dial):
+        padding = 1
         arr = [char for char in tape]
-        self.tape = [' ' for i in range(5)] + arr + [' ' for i in range(5)]
-        self.position = position + 5
+        self.tape = [' ' for i in range(padding)] + arr + [' ' for i in range(padding)]
+        self.position = position + padding
         self.dial = dial
 
     # The main_loop which will govern the Turing Machine's workflow.
